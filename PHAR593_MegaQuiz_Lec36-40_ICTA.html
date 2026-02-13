@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PHAR 593 • Mega Quiz (Lec 36–40 + ICTAs)</title>
+<style>
+  :root {
+    --bg: #0b0f17;
+    --card: rgba(255,255,255,.06);
+    --card2: rgba(255,255,255,.09);
+    --text: #e9eef8;
+    --muted: rgba(233,238,248,.72);
+    --muted2: rgba(233,238,248,.55);
+    --accent: #7dd3fc;
+    --good: #34d399;
+    --bad: #fb7185;
+    --warn: #fbbf24;
+    --border: rgba(255,255,255,.12);
+    --shadow: 0 20px 50px rgba(0,0,0,.55);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    background: radial-gradient(1200px 700px at 10% 10%, rgba(125,211,252,.18), transparent 60%),
+                radial-gradient(900px 600px at 90% 20%, rgba(52,211,153,.12), transparent 55%),
+                radial-gradient(900px 700px at 50% 100%, rgba(251,113,133,.10), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 18px 60px; }
+  header {
+    display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between;
+    margin-bottom: 18px;
+  }
+  .brand {
+    display:flex; gap:12px; align-items:center;
+  }
+  .logo {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(125,211,252,.9), rgba(52,211,153,.8));
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  h1 {
+    font-size: 18px; margin: 0; letter-spacing: .3px;
+  }
+  .sub {
+    font-size: 12px; color: var(--muted2); margin-top: 2px;
+  }
+  .topbar {
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end;
+  }
+  .pill {
+    display:flex; gap:8px; align-items:center;
+    padding: 10px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.22);
+    backdrop-filter: blur(8px);
+  }
+  select, button, input[type="checkbox"] {
+    font: inherit;
+  }
+  select {
+    background: transparent;
+    color: var(--text);
+    border: none;
+    outline: none;
+    cursor:pointer;
+  }
+  option { background: #0f1626; color: var(--text); }
+  button {
+    cursor:pointer;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.22);
+    transition: transform .08s ease, filter .12s ease, border-color .12s ease;
+  }
+  button:hover { filter: brightness(1.08); border-color: rgba(255,255,255,.22); }
+  button:active { transform: translateY(1px); }
+  .primary {
+    border-color: rgba(125,211,252,.35);
+    background: linear-gradient(180deg, rgba(125,211,252,.22), rgba(125,211,252,.10));
+  }
+  .danger {
+    border-color: rgba(251,113,133,.35);
+    background: linear-gradient(180deg, rgba(251,113,133,.22), rgba(251,113,133,.10));
+  }
+  .grid {
+    display:grid;
+    grid-template-columns: 1.25fr .75fr;
+    gap: 16px;
+    margin-top: 14px;
+  }
+  @media (max-width: 920px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+  }
+  .card .hd {
+    padding: 16px 16px 0;
+    display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
+  }
+  .meta {
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .tag {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+  }
+  .progress {
+    height: 10px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow:hidden;
+    margin: 10px 16px 0;
+  }
+  .bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(125,211,252,.9), rgba(52,211,153,.85));
+  }
+  .q {
+    padding: 14px 16px 6px;
+    font-size: 18px;
+    line-height: 1.25;
+  }
+  .choices {
+    padding: 8px 16px 14px;
+    display:grid;
+    gap: 10px;
+  }
+  .choice {
+    text-align:left;
+    padding: 12px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+    transition: transform .08s ease, border-color .12s ease, filter .12s ease;
+  }
+  .choice:hover { filter: brightness(1.08); border-color: rgba(255,255,255,.22); }
+  .choice:active { transform: translateY(1px); }
+  .choice.correct {
+    border-color: rgba(52,211,153,.55);
+    background: rgba(52,211,153,.14);
+  }
+  .choice.wrong {
+    border-color: rgba(251,113,133,.55);
+    background: rgba(251,113,133,.14);
+  }
+  .explain {
+    padding: 0 16px 16px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.35;
+  }
+  .explain .why {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.04);
+  }
+  .explain .why strong {
+    color: var(--text);
+  }
+  .side {
+    padding: 16px;
+  }
+  .stats {
+    display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+  }
+  .stat {
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.04);
+  }
+  .stat .k { color: var(--muted2); font-size: 12px; }
+  .stat .v { font-size: 18px; margin-top: 4px; }
+  .tog {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.04);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .tog label { display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .hint {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px dashed rgba(255,255,255,.20);
+    color: var(--muted2);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .kbd {
+    font-family: ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    padding: 2px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.05);
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>PHAR 593 • Mega Quiz (Lec 36–40 + ICTAs)</h1>
+        <div class="sub">Explains answers • Wrong answers loop back later • Slide refs included</div>
+      </div>
+    </div>
+
+    <div class="topbar">
+      <div class="pill" title="Choose which deck to study">
+        <span style="color:var(--muted);font-size:12px;">Deck</span>
+        <select id="deckSel"></select>
+      </div>
+      <button id="startBtn" class="primary">Start / Restart</button>
+      <button id="resetBtn" class="danger" title="Wipes saved progress for this quiz">Reset saved progress</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card" id="quizCard">
+      <div class="hd">
+        <div class="meta" id="metaLeft"></div>
+        <div class="meta" id="metaRight"></div>
+      </div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="q" id="qText">Hit <span class="kbd">Start</span> to begin.</div>
+      <div class="choices" id="choices"></div>
+      <div class="explain" id="explain" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <div class="side">
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Progress</div>
+            <div class="v" id="progV">0 / 0</div>
+          </div>
+          <div class="stat">
+            <div class="k">Accuracy</div>
+            <div class="v" id="accV">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Correct</div>
+            <div class="v" id="corV">0</div>
+          </div>
+          <div class="stat">
+            <div class="k">Wrong</div>
+            <div class="v" id="wrV">0</div>
+          </div>
+        </div>
+
+        <div class="tog">
+          <label><input type="checkbox" id="showRefs" checked/> Show slide refs</label>
+          <span title="Shows lecture + slide for each question">📌</span>
+        </div>
+
+        <div class="tog">
+          <label><input type="checkbox" id="autoAdvance" checked/> Auto-advance after feedback</label>
+          <span title="After you answer, click anywhere in the explanation to go next">⏭️</span>
+        </div>
+
+        <div class="tog">
+          <label><input type="checkbox" id="hardMode"/> Hard mode</label>
+          <span title="Hard mode hides feedback until you commit and disables 'skip'">🧠</span>
+        </div>
+
+        <div class="hint">
+          Keyboard: <span class="kbd">1</span>–<span class="kbd">4</span> choose option • <span class="kbd">N</span> next • <span class="kbd">S</span> skip (unless Hard mode) • <span class="kbd">R</span> restart deck.
+          <br/><br/>
+          Wrong answers get re-queued a few questions later (spaced repetition). Your progress saves automatically in your browser.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BANK = [{"id": "Lec36Aerosols/Inhaled/Intranasal_34_001", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "34", "prompt": "What particle size range is generally optimal for pulmonary drug delivery (deposition in lungs)?", "choices": ["0.05–0.5 µm", "1–5 µm", "10–50 µm", ">100 µm"], "answerIndex": 1, "explain": "Pulmonary drug delivery targets particles ~1–5 microns to deposit in the respiratory tract rather than being exhaled or trapped in upper airway.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_34_002", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "34", "prompt": "Why do MDIs (metered dose inhalers) use liquified propellants (vs compressed gas) for dosing consistency?", "choices": ["Liquified propellants are sterile by default", "They provide constant vapor pressure → more uniform dose", "They increase particle size into the 10–50 µm range", "They eliminate the need to shake suspensions"], "answerIndex": 1, "explain": "Liquified propellants maintain near-constant vapor pressure as product is used, so metered volumes deliver consistent doses.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_15–17_003", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "15–17", "prompt": "Compressed-gas propellant aerosols are rarely used for pharmaceuticals mainly because:", "choices": ["They cannot use dip tubes", "Pressure drops as product is used → inconsistent delivery", "They cannot form foams", "They always require lactose as a carrier"], "answerIndex": 1, "explain": "Compressed gases lose pressure as headspace expands during use, causing variable output/dose.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_17_004", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "17", "prompt": "Which QC checks are listed for aerosols per USP <5> & <601> (pick the best match)?", "choices": ["Only sterility and pH", "Leak rate, net fill weight, valve delivery, spray pattern, particle size distribution", "Only dissolution testing using Apparatus 1", "Only cap color standardization"], "answerIndex": 1, "explain": "Aerosol QC includes assay/content uniformity, leak rate, net fill weight, valve delivery, spray pattern, particle size distribution/aerodynamic sizing, microbial quality, etc.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_27_005", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "27", "prompt": "Which statement best distinguishes DPI from MDI?", "choices": ["DPI always contains HFA propellant", "DPI has no propellant; relies on patient inhalation; often uses lactose as carrier", "DPI must be preservative-free and isotonic", "DPI is always a sterile aqueous solution"], "answerIndex": 1, "explain": "Dry powder inhalers do not use propellants and commonly mix micronized drug with lactose as a carrier.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_28–29_006", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "28–29", "prompt": "Soft Mist Inhalers (SMIs) are best described as:", "choices": ["Pressurized aerosol systems using liquified HFA", "Nonpressurized, metered liquid systems that generate a fine mist (e.g., Respimat)", "Dry powders blended with lactose", "Single-dose sterile solutions with no preservatives"], "answerIndex": 1, "explain": "SMIs are nonpressurized liquids that mechanically aerosolize a metered dose into fine droplets; because they’re multi-dose aqueous, preservatives are commonly included.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_29–30_007", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "29–30", "prompt": "Compared with SMIs, nebulizer solutions are typically:", "choices": ["More likely to contain preservatives", "Preservative-free (single-dose sterile systems) and must be isotonic (with some exceptions)", "Always dry powders", "Always non-sterile"], "answerIndex": 1, "explain": "Nebulizer products are usually single-dose sterile units, so they are preservative-free and generally isotonic.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_31_008", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "31", "prompt": "Nebulizers convert drug solution/suspension into approximately what particle size (per slide)?", "choices": ["0.5–0.7 µm", "1–5 µm", "10–20 µm", "50–100 µm"], "answerIndex": 0, "explain": "The slide notes nebulizers create near-colloidal particles around 0.5–0.7 microns to deposit in bronchioles; larger droplets fall back into the liquid.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_14_009", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "14", "prompt": "Inhaled suspension aerosols (MDI) typically DO NOT contain suspending agents because:", "choices": ["Suspending agents would increase viscosity and clog valves/impact aerosolization", "They would make the product isotonic", "They are required only for DPIs", "USP forbids all excipients in MDIs"], "answerIndex": 0, "explain": "For inhaled aerosols, suspending agents can interfere with aerosol performance/valves; instead patients are told to shake well for uniformity.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_37–38_010", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "37–38", "prompt": "Intranasal cavity can accommodate about what administration volume per nostril (per slide)?", "choices": ["0.02 mL", "0.2 mL", "2 mL", "20 mL"], "answerIndex": 1, "explain": "Slide notes the nasal cavity has ~20 mL capacity overall, but nostrils can accommodate ~0.2 mL per dose.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_38_011", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "38", "prompt": "Approximate intranasal pH is:", "choices": ["1–2", "3–4", "5.5–6.5", "8–9"], "answerIndex": 2, "explain": "Slide lists intranasal pH about 5.5–6.5.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_39_012", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "39", "prompt": "A key disadvantage for systemic absorption via intranasal route is:", "choices": ["No blood supply in the nasal cavity", "Mucociliary elevator, congestion/runny nose, and drainage from tears/paranasal fluids", "Requires particles >100 µm", "Must always be terminally sterilized"], "answerIndex": 1, "explain": "Mucociliary clearance + concurrent drainage makes systemic delivery challenging.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_39_013", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "39", "prompt": "A key advantage of intranasal administration is:", "choices": ["Always avoids all systemic effects", "Rapid absorption/onset and small doses per administration", "Only works for powders", "Requires large volumes (≥2 mL)"], "answerIndex": 1, "explain": "Intranasal route can provide rapid onset with small doses; often used for local effects with low systemic exposure.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_37_014", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "37", "prompt": "Which intranasal dosage form is 'preferred & common' per slide?", "choices": ["Solutions", "Powders", "Oil-based ointments", "Enteric-coated tablets"], "answerIndex": 0, "explain": "Intranasal solutions are preferred and most common.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_37_015", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "37", "prompt": "Which intranasal dosage form is less preferred because undissolved solids can irritate?", "choices": ["Solutions", "Suspensions", "Gels", "Aqueous sprays"], "answerIndex": 1, "explain": "Suspensions may irritate due to undissolved solids.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_11_016", "lecture": "Lec37 Modified Release & Dissolution", "slide": "11", "prompt": "Delayed release (DR) is also known as:", "choices": ["Immediate release", "Enteric coated", "Osmotic system", "Ion-exchange resin"], "answerIndex": 1, "explain": "DR is commonly enteric coated; it delays dissolution/absorption (often pH-dependent).", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_20_017", "lecture": "Lec37 Modified Release & Dissolution", "slide": "20", "prompt": "For extended-release (ER) dosage forms, which relationship is intended (per slide)?", "choices": ["Absorption rate faster than elimination rate", "Absorption rate slower than elimination rate", "Absorption rate equals elimination rate at all times", "No absorption occurs"], "answerIndex": 1, "explain": "ER intentionally slows liberation/dissolution so absorption is slower than elimination, producing a plateau and less frequent dosing.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_21_018", "lecture": "Lec37 Modified Release & Dissolution", "slide": "21", "prompt": "Which is listed as an advantage of ER dosing?", "choices": ["More frequent dosing", "Less fluctuation between peaks and troughs", "Guaranteed lower cost", "Eliminates dose dumping risk"], "answerIndex": 1, "explain": "Advantages include better adherence (less frequent dosing) and better control of levels (less peak–trough fluctuation).", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_21_019", "lecture": "Lec37 Modified Release & Dissolution", "slide": "21", "prompt": "Which is listed as a disadvantage of ER dosing?", "choices": ["Better adherence", "Risk of dose dumping", "Less fluctuation", "Better control of adverse effects"], "answerIndex": 1, "explain": "Disadvantages include expense, desire for control, risk of dose dumping, and possible discomfort.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_22_020", "lecture": "Lec37 Modified Release & Dissolution", "slide": "22", "prompt": "A typical 'good' half-life range for ER candidates (per slide) is:", "choices": ["<30 minutes", "2–8 hours", ">24 hours", "Any half-life works equally"], "answerIndex": 1, "explain": "Slide notes ER candidates often have half-life ~2–8 hours and reasonable dose size; drug must dissolve in body fluids.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_24–25_021", "lecture": "Lec37 Modified Release & Dissolution", "slide": "24–25", "prompt": "In a matrix ER system, if the polymer network is soluble in aqueous environments, the rate-limiting step is usually:", "choices": ["Diffusion control", "Dissolution/erosion control", "Osmosis", "Ion exchange"], "answerIndex": 1, "explain": "If the matrix dissolves/erodes, dissolution is rate-limiting (dissolution-controlled matrix).", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_24–25_022", "lecture": "Lec37 Modified Release & Dissolution", "slide": "24–25", "prompt": "In a matrix ER system, if the polymer network is insoluble or gels on contact with water, the rate-limiting step is usually:", "choices": ["Dissolution control", "Diffusion control", "Photolysis", "Vapor pressure equilibrium"], "answerIndex": 1, "explain": "In insoluble/gel-forming matrices, drug diffuses out—diffusion control.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_48_023", "lecture": "Lec37 Modified Release & Dissolution", "slide": "48", "prompt": "Key counseling point for modified release dosage forms:", "choices": ["Crush to improve absorption", "Chew if dose is too large", "Do NOT crush or chew", "Switch IR↔ER freely"], "answerIndex": 2, "explain": "Modified release products should not be crushed/chewed because that can destroy the release mechanism and cause dose dumping.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_48_024", "lecture": "Lec37 Modified Release & Dissolution", "slide": "48", "prompt": "FDA Orange Book AB ratings: which statement matches the slide example?", "choices": ["AB1 and AB2 are always interchangeable", "Use AB1 products with AB1; do not substitute AB1 with AB2", "AB ratings apply only to injectables", "AB means 'avoid bioequivalence'"], "answerIndex": 1, "explain": "Slide example: AB1 products are bioequivalent with AB1; do not use AB1 with AB2.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_48_025", "lecture": "Lec37 Modified Release & Dissolution", "slide": "48", "prompt": "A 'ghost dosage form' in stools refers to:", "choices": ["An allergic reaction", "Empty shell/matrix appearing in stool after drug has released", "A sign of malabsorption always", "A reason to stop therapy immediately"], "answerIndex": 1, "explain": "Some ER tablets leave an insoluble shell/matrix that may appear in stool; drug has already been released.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_51–53_026", "lecture": "Lec37 Modified Release & Dissolution", "slide": "51–53", "prompt": "Why perform dissolution testing (general rationale per slides)?", "choices": ["To directly measure patient drug levels in vivo", "Because drug levels are expensive; dissolution testing is a lab surrogate for extent of dissolution", "Only to test vaccines", "To determine cap color"], "answerIndex": 1, "explain": "Drug level studies are expensive; dissolution testing provides a lab method to assess extent of dissolution/product performance.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_51_027", "lecture": "Lec37 Modified Release & Dissolution", "slide": "51", "prompt": "In dissolution testing objectives, Apparatus #1 and #2 refer to:", "choices": ["Basket and paddle", "Spray pattern and valve delivery", "Osmotic pump and ion exchange", "Autoclave and filter sterilization"], "answerIndex": 0, "explain": "USP dissolution apparatus #1 is basket; #2 is paddle (as commonly taught).", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_13_028", "lecture": "Lec37 Modified Release & Dissolution", "slide": "13", "prompt": "Which dosage form has NO liberation and NO dissolution step before absorption (per slide)?", "choices": ["Solution", "Suspension", "Tablet", "Capsule"], "answerIndex": 0, "explain": "Solutions already have drug molecules dissolved; suspensions require dissolution, and solids require disintegration/liberation then dissolution.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_13_029", "lecture": "Lec37 Modified Release & Dissolution", "slide": "13", "prompt": "In an oral suspension, the drug is typically:", "choices": ["Already fully dissolved", "Liberated but still requires dissolution to be absorbed", "Unable to dissolve in GI fluids", "Always enteric coated"], "answerIndex": 1, "explain": "Suspensions contain dispersed solid drug—already liberated but still needs to dissolve for absorption.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_13_030", "lecture": "Lec37 Modified Release & Dissolution", "slide": "13", "prompt": "A tablet generally must undergo which sequence for absorption (simplified)?", "choices": ["Absorption → dissolution → elimination", "Disintegration/liberation → dissolution → absorption", "Elimination → absorption → dissolution", "Osmosis → filtration → absorption"], "answerIndex": 1, "explain": "Solid dosage forms need disintegration/liberation and dissolution before absorption.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_6_031", "lecture": "Lec38 Ophthalmics & Otics", "slide": "6", "prompt": "Tear fluid volume is approximately:", "choices": ["70–100 µL", "7–10 µL", "0.7–1.0 mL", "30–50 mL"], "answerIndex": 1, "explain": "Slides note tear fluid volume ~7–10 microliters; unblinked eye max ~30 µL, blinked retains ~10 µL.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_9_032", "lecture": "Lec38 Ophthalmics & Otics", "slide": "9", "prompt": "Average eye drop volume from a container is about:", "choices": ["5 µL", "10 µL", "50 µL", "500 µL"], "answerIndex": 2, "explain": "Slide: average drop ≈ 50 microliters; much is lost during administration.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_9_033", "lecture": "Lec38 Ophthalmics & Otics", "slide": "9", "prompt": "Best counseling for multiple ophthalmic drops is:", "choices": ["Instill back-to-back immediately", "Wait ~5 minutes between additions", "Apply ointment first, then drops immediately", "Shake solutions vigorously to increase absorption"], "answerIndex": 1, "explain": "Slide: wait 5 minutes between additions to allow absorption.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_9–10_034", "lecture": "Lec38 Ophthalmics & Otics", "slide": "9–10", "prompt": "Manual punctal occlusion is used to:", "choices": ["Increase drainage into nasolacrimal duct", "Decrease drainage into lacrimal sac → decrease systemic absorption", "Sterilize the bottle tip", "Increase drop volume"], "answerIndex": 1, "explain": "Punctal occlusion reduces drainage into nasolacrimal system, lowering systemic absorption.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_10_035", "lecture": "Lec38 Ophthalmics & Otics", "slide": "10", "prompt": "Most common preservative in multi-dose ophthalmic solutions (per slide) is:", "choices": ["Sodium chloride", "Benzalkonium chloride (BAK)", "Mannitol", "PEG 3350"], "answerIndex": 1, "explain": "BAK is commonly used; if incompatible, other preservatives or preservative-free units are used.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_10_036", "lecture": "Lec38 Ophthalmics & Otics", "slide": "10", "prompt": "BAK is best described as:", "choices": ["An anionic surfactant that reduces corneal penetration", "A cationic surfactant that can improve corneal penetration", "A tonicity adjuster", "A viscosity enhancer"], "answerIndex": 1, "explain": "Slide: BAK is a cationic surfactant; besides preservation it can aid corneal penetration.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_11_037", "lecture": "Lec38 Ophthalmics & Otics", "slide": "11", "prompt": "Ophthalmic solutions prefer isotonicity; isotonic concentration is about:", "choices": ["0.09% NaCl", "0.9% NaCl", "9% NaCl", "1.8% NaCl only"], "answerIndex": 1, "explain": "Isotonic concentration is 0.9% NaCl; ophthalmics can tolerate ~0.5–2% NaCl equivalence.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_11_038", "lecture": "Lec38 Ophthalmics & Otics", "slide": "11", "prompt": "Ophthalmics can generally tolerate NaCl-equivalent concentrations between:", "choices": ["0.05–0.2%", "0.5–2%", "2–5%", "5–10%"], "answerIndex": 1, "explain": "Slides: 0.5–2% NaCl equivalence tolerated; >2% can derange tear film.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_11_039", "lecture": "Lec38 Ophthalmics & Otics", "slide": "11", "prompt": "Tears pH is approximately:", "choices": ["4.5", "6.0", "7.4", "9.5"], "answerIndex": 2, "explain": "Slide: tear pH ≈ 7.4.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_11_040", "lecture": "Lec38 Ophthalmics & Otics", "slide": "11", "prompt": "Weak bases in ophthalmic solutions often favor what pH range to improve solubility (per slide)?", "choices": ["Acidic pH down to ~3.5", "Neutral only (7.4)", "Basic pH up to 11", "Always pH 1"], "answerIndex": 0, "explain": "Weak bases are more ionized (more soluble) in acidic pH; slides note down to ~3.5 may be used, with irritation risk.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_12_041", "lecture": "Lec38 Ophthalmics & Otics", "slide": "12", "prompt": "In ophthalmic suspensions, recommended particle size is:", "choices": ["≤ 1 µm", "≤ 10 µm", ">50 µm", "Any size if shaken"], "answerIndex": 1, "explain": "Particles should be ≤10 microns to reduce irritation; suspensions require 'shake well'.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_13_042", "lecture": "Lec38 Ophthalmics & Otics", "slide": "13", "prompt": "Standard cap colors for ophthalmic liquids are used to identify:", "choices": ["Manufacturer only", "Therapeutic class/drug class", "pH of the solution", "Sterility status"], "answerIndex": 1, "explain": "Cap color indicates therapeutic class for ophthalmic liquids (solutions/suspensions/emulsions).", "tags": []}, {"id": "Lec38Ophthalmics&Otics_ICTA38 Q2_043", "lecture": "Lec38 Ophthalmics & Otics", "slide": "ICTA38 Q2", "prompt": "A tan cap on an ophthalmic bottle typically indicates what therapeutic class (per ICTA example with ciprofloxacin)?", "choices": ["Mydriatic", "Miotic", "Anti-infective", "β-blocker"], "answerIndex": 2, "explain": "ICTA example: ciprofloxacin ophthalmic solution had a tan cap indicating anti-infective class.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_ICTA38 Q1_044", "lecture": "Lec38 Ophthalmics & Otics", "slide": "ICTA38 Q1", "prompt": "Ciprofloxacin 0.3% ophthalmic solution ingredients include mannitol primarily as:", "choices": ["Preservative", "Tonicity adjuster", "Viscosity enhancer", "Buffer component"], "answerIndex": 1, "explain": "ICTA lists mannitol as a tonicity adjuster (an attribute-related excipient for ophthalmics).", "tags": []}, {"id": "Lec38Ophthalmics&Otics_ICTA38 Q3_045", "lecture": "Lec38 Ophthalmics & Otics", "slide": "ICTA38 Q3", "prompt": "Ciprofloxacin ophthalmic solution pH was 4.5 mainly to:", "choices": ["Match tears pH exactly", "Increase solubility by ionizing the basic moiety", "Prevent all stinging", "Force precipitation for longer action"], "answerIndex": 1, "explain": "ICTA: ciprofloxacin has a basic piperazinyl group; acidic pH favors ionized form → better water solubility.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_ICTA38 Q4_046", "lecture": "Lec38 Ophthalmics & Otics", "slide": "ICTA38 Q4", "prompt": "Voltaren (diclofenac) ophthalmic solution pH was ~7.2. The main reason it differs from ciprofloxacin’s pH is:", "choices": ["Diclofenac is a weak acid; different ionization/solubility needs", "Voltaren must be hypertonic", "Ciprofloxacin is a steroid", "pH doesn’t affect solubility"], "answerIndex": 0, "explain": "ICTA explains diclofenac is a weak acid (pKa ~4.15), so its formulation pH strategy differs from a basic drug like ciprofloxacin.", "tags": []}, {"id": "Lec38Ophthalmics&Otics_ICTA38 Q4_047", "lecture": "Lec38 Ophthalmics & Otics", "slide": "ICTA38 Q4", "prompt": "Voltaren uses sorbic acid preservative likely because:", "choices": ["Sorbic acid increases viscosity", "Benzalkonium chloride could form an insoluble ion-pair precipitate with diclofenac", "BAK is never used in ophthalmics", "Sorbic acid is mandatory for NSAIDs"], "answerIndex": 1, "explain": "ICTA: weak acids + weak bases can form insoluble ion-pair complexes; diclofenac (anion) + benzalkonium (cation) can precipitate.", "tags": []}, {"id": "Lec39BiotechProducts_15_048", "lecture": "Lec39 Biotech Products", "slide": "15", "prompt": "A liposome is best described as:", "choices": ["A solid polymer matrix tablet", "A vesicle with an aqueous core surrounded by a lipid bilayer", "A micelle with oil core only", "An enteric coating"], "answerIndex": 1, "explain": "Liposomes are vesicles with an aqueous core and phospholipid bilayer; can incorporate drugs and modify release for injectables.", "tags": []}, {"id": "Lec39BiotechProducts_17_049", "lecture": "Lec39 Biotech Products", "slide": "17", "prompt": "A clinical advantage example of liposomal formulations (per slide) is:", "choices": ["Increase cardiotoxicity of doxorubicin", "Decrease cardiotoxicity of doxorubicin or decrease nephrotoxicity of amphotericin B", "Make drugs orally bioavailable always", "Eliminate need for cold chain"], "answerIndex": 1, "explain": "Slides give examples: liposomal doxorubicin ↓ cardiotoxicity; liposomal amphotericin B ↓ nephrotoxicity.", "tags": []}, {"id": "Lec39BiotechProducts_18_050", "lecture": "Lec39 Biotech Products", "slide": "18", "prompt": "'Stealth' liposomes reduce RES uptake primarily by adding:", "choices": ["Sodium chloride", "PEG moieties", "Mannitol", "Benzalkonium chloride"], "answerIndex": 1, "explain": "Slides: PEG coating reduces uptake by reticuloendothelial system; ligands can be added for specificity.", "tags": []}, {"id": "Lec39BiotechProducts_Handling_051", "lecture": "Lec39 Biotech Products", "slide": "Handling", "prompt": "Which handling/counseling point is emphasized for many biologics?", "choices": ["Freeze all biologics", "Shake vigorously to mix", "Store refrigerated with cold-chain monitoring; avoid vigorous shaking; roll vial gently after reconstitution", "They are always interchangeable"], "answerIndex": 2, "explain": "Slides: many biologics are refrigerated; cold-chain matters; vigorous shaking can denature proteins; roll gently; products may not be interchangeable.", "tags": []}, {"id": "Lec39BiotechProducts_ICTA39 Q3_052", "lecture": "Lec39 Biotech Products", "slide": "ICTA39 Q3", "prompt": "In Procrit (epoetin alfa) injection, albumin functions mainly as:", "choices": ["Tonicity adjuster", "Anti-adsorbant (prevents adsorption to surfaces)", "Preservative", "Cosolvent"], "answerIndex": 1, "explain": "ICTA: albumin is used as an anti-adsorbant in some biologic injections.", "tags": []}, {"id": "Lec39BiotechProducts_ICTA39 Q4_053", "lecture": "Lec39 Biotech Products", "slide": "ICTA39 Q4", "prompt": "In Gardasil-9, aluminum functions as:", "choices": ["Buffer", "Adjuvant", "Preservative", "Viscosity enhancer"], "answerIndex": 1, "explain": "ICTA: aluminum acts as an adjuvant to enhance immune response.", "tags": []}, {"id": "Lec39BiotechProducts_ICTA39 Q2_054", "lecture": "Lec39 Biotech Products", "slide": "ICTA39 Q2", "prompt": "Fluad (adjuvanted influenza vaccine) is formulated as an:", "choices": ["Oral tablet", "Injectable emulsion", "Dry powder inhaler", "Transdermal patch"], "answerIndex": 1, "explain": "ICTA: Fluad is an injectable emulsion (oil phase + emulsifiers + buffers) providing prolonged immune stimulation via slow release.", "tags": []}, {"id": "Lec39BiotechProducts_ICTA39 Q2_055", "lecture": "Lec39 Biotech Products", "slide": "ICTA39 Q2", "prompt": "In Fluad emulsion, squalene is best described as:", "choices": ["Oil phase", "Preservative", "Chelating agent", "Tonicity adjuster"], "answerIndex": 0, "explain": "ICTA: squalene is the oil phase of the injectable emulsion.", "tags": []}, {"id": "Lec39BiotechProducts_ICTA39 Q1_056", "lecture": "Lec39 Biotech Products", "slide": "ICTA39 Q1", "prompt": "In Avonex, polysorbate 20 functions as:", "choices": ["Surfactant stabilizer", "Buffer component", "Anti-adsorbant", "Preservative only"], "answerIndex": 0, "explain": "ICTA: polysorbate 20 is a surfactant stabilizer in Avonex.", "tags": []}, {"id": "Lec39BiotechProducts_ICTA39 Q6_057", "lecture": "Lec39 Biotech Products", "slide": "ICTA39 Q6", "prompt": "Mounjaro injection pH 6.5–7.5 may clinically benefit patients by:", "choices": ["Maximizing burning/stinging", "Being close to physiologic pH, potentially minimizing stinging/burning", "Forcing precipitation at injection site", "Eliminating need for WFI"], "answerIndex": 1, "explain": "ICTA: pH near physiologic (7.4) may reduce discomfort on injection.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_3_058", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "3", "prompt": "Which is NOT one of the stability categories listed in the lecture?", "choices": ["Chemical stability", "Microbiological stability", "Therapeutic stability", "Electromagnetic stability"], "answerIndex": 3, "explain": "Lecture lists chemical, physical, microbiological, therapeutic, and toxicological stability. 'Electromagnetic stability' is not listed.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_3_059", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "3", "prompt": "Chemical stability means:", "choices": ["Appearance/palatability unchanged", "Sterility retained", "Active retains chemical integrity and labeled potency within limits", "No change in therapeutic effect"], "answerIndex": 2, "explain": "Chemical stability = chemical integrity and potency maintained within specified limits.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_3_060", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "3", "prompt": "Physical stability means:", "choices": ["No microbial growth", "Therapeutic effect unchanged", "Original physical properties like appearance, uniformity, dissolution, suspendability retained", "No toxicity increase"], "answerIndex": 2, "explain": "Physical stability includes appearance, palatability, uniformity, dissolution, and suspendability.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_3_061", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "3", "prompt": "Microbiological stability means:", "choices": ["No toxicity increase", "Sterility or resistance to microbial growth retained; antimicrobials retain effectiveness", "Potency unchanged", "No photolysis"], "answerIndex": 1, "explain": "Microbiological stability = sterility/resistance to growth maintained; preservatives effective within limits.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_4_062", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "4", "prompt": "In injectable formulation design, propylene glycol and alcohol are examples of:", "choices": ["Tonicity adjusters", "Cosolvents", "Chelating agents", "Buffers"], "answerIndex": 1, "explain": "Slides list propylene glycol and alcohol as cosolvents in sterile injectable formulations.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_5_063", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "5", "prompt": "Dilution of cosolvents from SVI into LVI can cause incompatibility. Which example is given?", "choices": ["Diazepam injection admixed into LVI", "Insulin mixed into saline", "Vancomycin mixed into D5W", "Heparin mixed into NS"], "answerIndex": 0, "explain": "Slide example: diazepam injection admixed into a large-volume infusion can precipitate or have short stability due to cosolvent dilution.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_5_064", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "5", "prompt": "A weak acid anion + weak base cation can form an insoluble ____ (concentration-dependent).", "choices": ["Chelate complex", "Ion-pair complex", "Eutectic mixture", "Osmotic gradient"], "answerIndex": 1, "explain": "Slide: weak acid + weak base can form soluble ions individually but insoluble ion-pair complex.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_6_065", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "6", "prompt": "Weak acids can become insoluble when placed in ____ pH (favoring unionized free acid).", "choices": ["Basic", "Acidic", "Neutral only", "Any pH"], "answerIndex": 1, "explain": "Slide: weak acids in acidic pH shift to unionized free acid → insoluble.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_6_066", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "6", "prompt": "Weak bases can become insoluble when placed in ____ pH (favoring unionized free base).", "choices": ["Acidic", "Basic", "Neutral only", "Any pH"], "answerIndex": 1, "explain": "Slide: weak bases in basic pH shift to unionized free base → insoluble.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_7_067", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "7", "prompt": "Ester or amide hydrolysis can be driven by:", "choices": ["Only light", "Only cold temperatures", "Either acid or base conditions", "Only neutral pH"], "answerIndex": 2, "explain": "Slide: hydrolysis of esters/amides can occur in acid or base; example given is ampicillin in D5W (pH ~4.4).", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_8_068", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "8", "prompt": "Photolysis incompatibility example from the slide:", "choices": ["Nitroglycerin only", "Sodium nitroprusside", "Albumin", "Benzalkonium chloride"], "answerIndex": 1, "explain": "Slide: sodium nitroprusside is light-sensitive (photolysis).", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_8_069", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "8", "prompt": "Incompatibility with PVC plastics is highlighted for IVLE drugs like:", "choices": ["Nitroglycerin and sodium nitroprusside", "Ciprofloxacin and diclofenac", "Albuterol and budesonide", "Epoetin alfa and interferon"], "answerIndex": 0, "explain": "Slide lists IVLE drug incompatibilities with PVC: nitroglycerin and sodium nitroprusside.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_8_070", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "8", "prompt": "General temperature effect noted: reaction rate roughly ____ for each 10°C increase.", "choices": ["Halves", "Doubles", "Stays the same", "Becomes zero-order"], "answerIndex": 1, "explain": "Slide: reaction rate doubles for each 10°C increase (general rule of thumb).", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_9_071", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "9", "prompt": "If a dosage form cannot be terminally sterilized, best practice per slide is:", "choices": ["Skip sterility requirements", "Sterilize each ingredient separately and mix aseptically (aseptic processing)", "Autoclave anyway", "Add extra preservatives and ignore"], "answerIndex": 1, "explain": "Slide: if terminal sterilization not possible, sterilize components separately and compound under aseptic conditions.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_10_072", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "10", "prompt": "Management of incompatibilities includes:", "choices": ["Never use references", "Ignore inactive ingredients", "Use multi-lumen catheters or space out administration; flush line (SAS(H)) if sequential", "Always co-infuse everything"], "answerIndex": 2, "explain": "Slide recommends checking literature, considering inactive ingredients, using multi-lumen/spacing, and flushing (SAS(H)) if needed.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_10_073", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "10", "prompt": "SAS(H) protocol typically refers to flushing with:", "choices": ["Sterile alcohol solution", "Saline–administer–saline (± heparin depending on line)", "Sucrose–acid–sorbic acid", "Sodium acetate solution"], "answerIndex": 1, "explain": "Slide references flushing using SAS(H) protocol when administering sequentially (saline before/after; heparin may be used depending on line).", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q1_074", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q1", "prompt": "Primatene Mist® inactive ingredients (excluding thymol): which option matches the functions listed?", "choices": ["Dehydrated alcohol = solvent; HFA-134a = propellant; Polysorbate 80 = wetting agent", "Dehydrated alcohol = preservative; HFA-134a = buffer; Polysorbate 80 = tonicity adjuster", "Dehydrated alcohol = carrier; HFA-134a = lubricant; Polysorbate 80 = chelator", "Dehydrated alcohol = suspending agent; HFA-134a = surfactant; Polysorbate 80 = preservative"], "answerIndex": 0, "explain": "ICTA36: dehydrated alcohol is (co)solvent, HFA-134a is the propellant, polysorbate 80 is a wetting agent.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q2_075", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q2", "prompt": "Primatene Mist is described as a two-phase aerosol. The two phases are:", "choices": ["Drug crystals + lactose carrier", "Liquid HFA + vapor HFA", "Oil phase + water phase", "Powder + air"], "answerIndex": 1, "explain": "ICTA36: two phases are liquid HFA and vapor HFA; vapor replenishes liquid to maintain pressure.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q3_076", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q3", "prompt": "Clinical benefit of liquified propellant design (vs compressed gas) is mainly:", "choices": ["Constant pressure → consistent/precise dosing", "Lower need for shaking", "Eliminates need for metering valve", "Makes product nonflammable"], "answerIndex": 0, "explain": "ICTA36: liquified propellants keep pressure constant → exact dosing.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q4_077", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q4", "prompt": "Primatene Mist needs to be shaken before use because:", "choices": ["It is a solution with volatile solvent", "It is a suspension; particles settle and would cause uneven dosing if not shaken", "It is a dry powder inhaler", "USP requires shaking all aerosols"], "answerIndex": 1, "explain": "ICTA36: it’s a suspension (wetting agent present); if not shaken, insoluble particles settle → uneven dosing.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q5_078", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q5", "prompt": "In Breo Ellipta®, which ingredient functions as the carrier powder?", "choices": ["HFA-134a", "Lactose", "Magnesium stearate", "Water for injection"], "answerIndex": 1, "explain": "ICTA36: lactose is the carrier powder in DPI; magnesium stearate is a lubricant/glidant for flow.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q6_079", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q6", "prompt": "In ipratropium bromide + albuterol sulfate inhalation solution, NaCl functions as:", "choices": ["Chelating agent", "Tonicity adjustment", "Buffer", "Preservative"], "answerIndex": 1, "explain": "ICTA36: NaCl is used for tonicity adjustment in nebulizer solution.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q6_080", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q6", "prompt": "In the same nebulizer solution, edetate sodium (EDTA) functions as:", "choices": ["Chelating agent", "Suspending agent", "Propellant", "Carrier powder"], "answerIndex": 0, "explain": "ICTA36: edetate sodium is a chelating agent.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q7_081", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q7", "prompt": "The nebulizer solution pH is kept acidic mainly because both drugs are:", "choices": ["Weak acids that dissolve in base", "Weak bases that dissolve in acid (ionized form)", "Neutral and pH-independent", "Proteins requiring physiologic pH"], "answerIndex": 1, "explain": "ICTA36: ipratropium and albuterol are weak bases; acidic pH keeps them ionized and dissolved.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q8_082", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q8", "prompt": "Nebulizer solutions are isotonic mainly because contact time in airways is:", "choices": ["Instant (<1 sec)", "10–15 minutes; hypotonic/hypertonic solutions can burn/irritate", ">12 hours; requires preservatives", "Not relevant"], "answerIndex": 1, "explain": "ICTA36: prolonged airway contact during nebulization makes isotonicity important to avoid burning.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q9_083", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q9", "prompt": "Mometasone nasal spray: which excipient acts as a preservative?", "choices": ["Benzalkonium chloride", "Citric acid", "Glycerin", "Purified water"], "answerIndex": 0, "explain": "ICTA36: benzalkonium chloride is preservative.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q9_084", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q9", "prompt": "Mometasone nasal spray: microcrystalline cellulose and carboxymethylcellulose sodium function as:", "choices": ["Propellants", "Suspending agents", "Buffers only", "Osmotic agents"], "answerIndex": 1, "explain": "ICTA36: they are suspending agents.", "tags": []}, {"id": "Lec36Aerosols/Inhaled/Intranasal_ICTA36 Q10_085", "lecture": "Lec36 Aerosols/Inhaled/Intranasal", "slide": "ICTA36 Q10", "prompt": "Mometasone nasal spray pH range (per ICTA) is:", "choices": ["1–2", "4.3–4.9", "7.2–7.6", "10–12"], "answerIndex": 1, "explain": "ICTA36: pH 4.3–4.9, aligning with preferred nasal pH range (about 4–8).", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_3_086", "lecture": "Lec37 Modified Release & Dissolution", "slide": "3", "prompt": "Biopharmaceutics is the study that links:", "choices": ["Only manufacturing to packaging", "Physicochemical properties of drug/drug product to product performance", "Only receptor binding to effect", "Only pharmacogenomics to dosing"], "answerIndex": 1, "explain": "Slide defines biopharmaceutics as linking physicochemical properties of drug and drug product to performance.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_3_087", "lecture": "Lec37 Modified Release & Dissolution", "slide": "3", "prompt": "Match the definitions: Liberation, dissolution, absorption.", "choices": ["Liberation=transfer to blood; dissolution=release from dosage form; absorption=drug dissolves in fluids", "Liberation=release from dosage form; dissolution=released drug dissolves in fluids; absorption=transfer to circulation", "Liberation=first-pass metabolism; dissolution=elimination; absorption=distribution", "All are synonyms"], "answerIndex": 1, "explain": "Slides: Liberation is release of drug from dosage form; dissolution is released drug dissolving in fluids; absorption is transfer to circulation.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_6_088", "lecture": "Lec37 Modified Release & Dissolution", "slide": "6", "prompt": "Therapeutic window is the range between:", "choices": ["Cmax and Tmax", "MEC and MTC", "AUC and clearance", "F and FA"], "answerIndex": 1, "explain": "Slides: therapeutic window spans minimum effective concentration (MEC) to minimum toxic concentration (MTC).", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_6–7_089", "lecture": "Lec37 Modified Release & Dissolution", "slide": "6–7", "prompt": "If Cp is consistently below MEC, therapy is:", "choices": ["Too toxic", "Safe & effective", "Ineffective", "Guaranteed effective but slow"], "answerIndex": 2, "explain": "Below MEC → ineffective therapy.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_6–7_090", "lecture": "Lec37 Modified Release & Dissolution", "slide": "6–7", "prompt": "If Cp exceeds MTC, therapy is:", "choices": ["Ineffective", "Too toxic", "Unchanged", "More bioavailable only"], "answerIndex": 1, "explain": "Above MTC increases toxicity risk.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_53–56_091", "lecture": "Lec37 Modified Release & Dissolution", "slide": "53–56", "prompt": "Dissolution testing assesses:", "choices": ["Only extent of absorption", "Rate (how fast) and extent (how much) dissolution/release", "Only permeability", "Only first-pass metabolism"], "answerIndex": 1, "explain": "Slides: dissolution testing assesses rate and extent of dissolution; used as lab surrogate for product release.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_54_092", "lecture": "Lec37 Modified Release & Dissolution", "slide": "54", "prompt": "Which list correctly maps USP dissolution apparatus numbers to names?", "choices": ["#1 Basket, #2 Paddle", "#1 Paddle, #2 Basket", "#3 Flow-through cell, #4 Basket", "#7 Cylinder"], "answerIndex": 0, "explain": "Slides list apparatus #1 basket and #2 paddle (USP <711>).", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_54_093", "lecture": "Lec37 Modified Release & Dissolution", "slide": "54", "prompt": "USP dissolution apparatus #4 is:", "choices": ["Reciprocating holder", "Flow-through cell", "Cylinder", "Paddle over disk"], "answerIndex": 1, "explain": "Slides list apparatus #4 as flow-through cell.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_56_094", "lecture": "Lec37 Modified Release & Dissolution", "slide": "56", "prompt": "General procedure: dissolution media temperature is typically set to:", "choices": ["25°C", "37°C", "45°C", "60°C"], "answerIndex": 1, "explain": "Slide: media set at 37°C.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_60–65_095", "lecture": "Lec37 Modified Release & Dissolution", "slide": "60–65", "prompt": "Dissolution is NOT synonymous with bioavailability because:", "choices": ["Bioavailability is only for injectables", "Dissolution may not translate to in vivo absorption due to permeability/first-pass etc.", "Dissolution always equals 100% absorption", "Bioavailability is a lab-only concept"], "answerIndex": 1, "explain": "Slides explicitly: dissolution ≠ bioavailability. Bioavailability depends on absorption and first-pass metabolism, not just dissolution.", "tags": []}, {"id": "Lec37ModifiedRelease&Dissolution_62_096", "lecture": "Lec37 Modified Release & Dissolution", "slide": "62", "prompt": "IVIVC (in vitro–in vivo correlation) is most reliable for which BCS classes (per slide)?", "choices": ["Class 3 and 4", "Class 1 and 2", "Only Class 4", "All classes equally"], "answerIndex": 1, "explain": "Slide: IVIVC can be done on BCS Class 1 and 2, limited for class 3, unreliable for class 4.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q1_097", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q1", "prompt": "Phenytoin sodium injection includes propylene glycol and alcohol mainly to:", "choices": ["Increase tonicity", "Aid solubility (cosolvents) despite ionization", "Act as preservatives only", "Increase viscosity to suspend solids"], "answerIndex": 1, "explain": "ICTA40: propylene glycol and alcohol are cosolvents added to aid solubility.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q1_098", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q1", "prompt": "Max infusion rate: phenytoin sodium vs fosphenytoin sodium (PE) is:", "choices": ["50 mg/min vs 150 mg PE/min", "150 mg/min vs 50 mg PE/min", "100 mg/min vs 100 mg PE/min", "No limits listed"], "answerIndex": 0, "explain": "ICTA40: phenytoin sodium max 50 mg/min; fosphenytoin max 150 mg PE/min.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q1_099", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q1", "prompt": "Why is phenytoin sodium infused slower than fosphenytoin?", "choices": ["Phenytoin is always insoluble in water", "Propylene glycol can cause hypotension; phenytoin solution pH ~12 can cause extravasation", "Fosphenytoin is more toxic", "Fosphenytoin requires PVC tubing"], "answerIndex": 1, "explain": "ICTA40: propylene glycol hypotension risk + very high pH (≈12) extravasation risk drive slower infusion.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q2_100", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q2", "prompt": "Predict: phenytoin sodium (pKa 8.49) diluted into NS (pH 5) or D5W (pH 4.3) is likely to:", "choices": ["Remain fully dissolved in both", "Shift toward free acid → lower solubility → precipitate risk (plus cosolvent dilution)", "Become more soluble", "Polymerize"], "answerIndex": 1, "explain": "ICTA40: lower pH favors unionized free acid (less soluble) and cosolvents are diluted → precipitation risk.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q1–2_101", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q1–2", "prompt": "Fosphenytoin sodium is designed to be more water-soluble because it is a:", "choices": ["More lipophilic analog", "Prodrug with different ionization/solubility profile", "Enteric coating", "Liposome"], "answerIndex": 1, "explain": "ICTA40: fosphenytoin is a more water-soluble prodrug of phenytoin.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q1_102", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q1", "prompt": "Units: fosphenytoin infusion rate is reported as:", "choices": ["mg/mL", "mg PE/min (phenytoin equivalents)", "mEq/min", "mg/kg/hr only"], "answerIndex": 1, "explain": "ICTA40: infusion rate given as mg PE/min.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q4_103", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q4", "prompt": "Amiodarone HCl injection includes polysorbate 80 primarily as:", "choices": ["Buffer", "Surfactant to solubilize a very slightly soluble drug", "Tonicity adjuster", "Chelator"], "answerIndex": 1, "explain": "ICTA40: surfactant polysorbate 80 improves solubility of amiodarone HCl.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q5_104", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q5", "prompt": "Compatibility concern with polysorbate 80 is that it can:", "choices": ["Precipitate in water", "Leach plasticizers from PVC plastic", "Increase first-pass metabolism", "Sterilize the solution"], "answerIndex": 1, "explain": "ICTA40: polysorbate 80 can leach plasticizers from PVC.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_ICTA40 Q1_105", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "ICTA40 Q1", "prompt": "Phenytoin sodium injection contains propylene glycol 0.4 mL/mL and alcohol 0.1 mL/mL; these are examples of:", "choices": ["Cosolvents", "Buffers", "Tonicity agents", "Suspending agents"], "answerIndex": 0, "explain": "ICTA40 lists propylene glycol and alcohol as cosolvents in this formulation.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_11_106", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "11", "prompt": "Bioavailability (F) is best defined as:", "choices": ["The dose administered", "Fraction that reaches systemic circulation", "Time to peak concentration", "Drug potency"], "answerIndex": 1, "explain": "Slide: bioavailability is the fraction reaching systemic circulation.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_11_107", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "11", "prompt": "For oral (PO) dosing, the lecture defines: F =", "choices": ["FA + FH", "FA × FH", "FA / FH", "FH / FA"], "answerIndex": 1, "explain": "Slide: F = FA × FH, where FA is absorption bioavailability and FH is hepatic bioavailability.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_12_108", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "12", "prompt": "For IM dosing, which is true per slide?", "choices": ["Bypasses absorption and first-pass metabolism (F=1)", "Undergoes absorption (FA) but bypasses first-pass metabolism (FH=1)", "Bypasses first-pass but requires intestinal permeability", "Always has F=0.5"], "answerIndex": 1, "explain": "IM undergoes absorption but bypasses first-pass metabolism, so FH=1.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_13_109", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "13", "prompt": "For IV dosing, which is true per slide?", "choices": ["Requires dissolution and absorption", "Bypasses absorption and first-pass metabolism; F=1", "Has variable F depending on formulation", "Has FH=0"], "answerIndex": 1, "explain": "IV bypasses absorption and first-pass; absolute bioavailability F=1.", "tags": []}, {"id": "Lec40Stability/Incompatibilities/Bioavailability_11–12_110", "lecture": "Lec40 Stability/Incompatibilities/Bioavailability", "slide": "11–12", "prompt": "To be absorbed, drug generally must be dissolved, uncharged, and lipid soluble. This statement appears in the bioavailability slides for:", "choices": ["Only IV", "PO and IM", "Only topical", "Only inhaled"], "answerIndex": 1, "explain": "Slide notes this requirement for routes requiring absorption (PO and IM), not IV.", "tags": []}];
+
+const STORAGE_KEY = "phar593_megaquiz_lec36_40_v1";
+
+const DECKS = [
+  { id: "ALL", name: "ALL (Lec 36–40 + ICTAs)", filter: q => true },
+  { id: "L36", name: "Lec 36 (Aerosols/Inhaled/Intranasal + ICTA36)", filter: q => q.lecture.startsWith("Lec36") },
+  { id: "L37", name: "Lec 37 (Modified Release/Dissolution)", filter: q => q.lecture.startsWith("Lec37") },
+  { id: "L38", name: "Lec 38 (Ophthalmics/Otics + ICTA38)", filter: q => q.lecture.startsWith("Lec38") },
+  { id: "L39", name: "Lec 39 (Biotech + ICTA39)", filter: q => q.lecture.startsWith("Lec39") },
+  { id: "L40", name: "Lec 40 (Stability/Incompatibilities/Bioavailability + ICTA40)", filter: q => q.lecture.startsWith("Lec40") },
+];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+let state = {
+  deckId: "ALL",
+  order: [],         // array of question IDs in current session order
+  idx: 0,            // current index in order
+  correct: 0,
+  wrong: 0,
+  seen: 0,           // how many answered
+  answeredIds: {}, // id -> true if ever answered this session
+  lastAnsweredId: null,
+  lastWasCorrect: null,
+  locked: false,
+  finished: false,
+  hardMode: false,
+  showRefs: true,
+  autoAdvance: true,
+};
+
+const els = {
+  deckSel: document.getElementById("deckSel"),
+  startBtn: document.getElementById("startBtn"),
+  resetBtn: document.getElementById("resetBtn"),
+  qText: document.getElementById("qText"),
+  choices: document.getElementById("choices"),
+  explain: document.getElementById("explain"),
+  metaLeft: document.getElementById("metaLeft"),
+  metaRight: document.getElementById("metaRight"),
+  bar: document.getElementById("bar"),
+  progV: document.getElementById("progV"),
+  accV: document.getElementById("accV"),
+  corV: document.getElementById("corV"),
+  wrV: document.getElementById("wrV"),
+  showRefs: document.getElementById("showRefs"),
+  autoAdvance: document.getElementById("autoAdvance"),
+  hardMode: document.getElementById("hardMode"),
+};
+
+function save() {
+  const toSave = JSON.parse(JSON.stringify(state));
+  // keep it small: don't save huge objects
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const loaded = JSON.parse(raw);
+    // basic shape validation
+    if (!loaded || !Array.isArray(loaded.order)) return false;
+    state = { ...state, ...loaded };
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function buildDeck(deckId) {
+  const deck = DECKS.find(d => d.id === deckId) || DECKS[0];
+  const qs = BANK.filter(deck.filter);
+  const ids = qs.map(q => q.id);
+  shuffle(ids);
+  state.deckId = deck.id;
+  state.order = ids;
+  state.idx = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.seen = 0;
+  state.answeredIds = {};
+  state.lastAnsweredId = null;
+  state.lastWasCorrect = null;
+  state.locked = false;
+  state.finished = false;
+  save();
+}
+
+function getQById(id) {
+  return BANK.find(q => q.id === id);
+}
+
+function updateStats() {
+  const total = state.order.length;
+  els.progV.textContent = `${state.seen} / ${total}`;
+  els.corV.textContent = state.correct;
+  els.wrV.textContent = state.wrong;
+  const denom = state.correct + state.wrong;
+  els.accV.textContent = denom ? `${Math.round((state.correct/denom)*100)}%` : "—";
+  const pct = total ? Math.round((state.seen/total)*100) : 0;
+  els.bar.style.width = `${pct}%`;
+}
+
+function render() {
+  updateStats();
+  els.explain.style.display = "none";
+  els.explain.innerHTML = "";
+  els.choices.innerHTML = "";
+  state.locked = false;
+
+  const total = state.order.length;
+  if (!total) {
+    els.qText.textContent = "No questions in this deck.";
+    return;
+  }
+  if (state.idx >= total) {
+    state.finished = true;
+    const denom = state.correct + state.wrong;
+    const acc = denom ? Math.round((state.correct/denom)*100) : 0;
+    els.qText.innerHTML = `Done. Accuracy: <strong>${acc}%</strong>. Click <span class="kbd">Start</span> to reshuffle and run it back.`;
+    els.metaLeft.innerHTML = "";
+    els.metaRight.innerHTML = "";
+    save();
+    return;
+  }
+
+  const q = getQById(state.order[state.idx]);
+  if (!q) {
+    els.qText.textContent = "Question not found (bad ID).";
+    return;
+  }
+
+  // meta
+  const tags = [];
+  if (state.showRefs) {
+    tags.push(`<span class="tag">📚 ${q.lecture}</span>`);
+    tags.push(`<span class="tag">📌 Slide: ${q.slide}</span>`);
+  }
+  els.metaLeft.innerHTML = tags.join("");
+  els.metaRight.innerHTML = `<span class="tag">#${state.idx+1} / ${total}</span>`;
+
+  // question
+  els.qText.textContent = q.prompt;
+
+  // choices
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.type = "button";
+    btn.dataset.idx = i;
+    btn.innerHTML = `<strong style="opacity:.85;margin-right:8px;">${i+1}.</strong> ${c}`;
+    btn.addEventListener("click", () => choose(i));
+    els.choices.appendChild(btn);
+  });
+
+  // skip button
+  if (!state.hardMode) {
+    const skip = document.createElement("button");
+    skip.type = "button";
+    skip.className = "choice";
+    skip.style.opacity = ".85";
+    skip.innerHTML = `Skip for now <span style="color:var(--muted2)">(re-queue later)</span>`;
+    skip.addEventListener("click", () => skipQ());
+    els.choices.appendChild(skip);
+  }
+
+  save();
+}
+
+function insertLater(id) {
+  // place it 3–7 questions later (or at end if near end)
+  const delay = 3 + Math.floor(Math.random()*5); // 3..7
+  const target = clamp(state.idx + delay, state.idx + 1, state.order.length);
+  state.order.splice(target, 0, id);
+}
+
+function choose(choiceIdx) {
+  if (state.locked || state.finished) return;
+  state.locked = true;
+
+  const qid = state.order[state.idx];
+  const q = getQById(qid);
+  const correct = (choiceIdx === q.answerIndex);
+
+  // mark buttons
+  const buttons = Array.from(document.querySelectorAll(".choice"));
+  buttons.forEach((b) => {
+    const i = Number(b.dataset.idx);
+    if (Number.isNaN(i)) return;
+    if (i === q.answerIndex) b.classList.add("correct");
+    if (i === choiceIdx && !correct) b.classList.add("wrong");
+    b.disabled = true;
+  });
+
+  state.seen += 1;
+  if (correct) state.correct += 1;
+  else state.wrong += 1;
+
+  state.answeredIds[qid] = true;
+  state.lastAnsweredId = qid;
+  state.lastWasCorrect = correct;
+
+  // if wrong: re-queue
+  if (!correct) {
+    insertLater(qid);
+  }
+
+  // feedback block
+  const title = correct
+    ? `<div class="why"><strong style="color:var(--good);">Correct.</strong> ${q.explain}</div>`
+    : `<div class="why"><strong style="color:var(--bad);">Wrong.</strong> ${q.explain}
+         <div style="margin-top:8px;color:var(--muted2);">This question will come back again in a few questions.</div>
+       </div>`;
+
+  // build "why wrong" for the picked option (simple, non-handwavy)
+  let whyPicked = "";
+  if (!correct) {
+    const picked = q.choices[choiceIdx];
+    whyPicked = `<div class="why" style="margin-top:10px;">
+        <strong>Why your choice is wrong:</strong><br/>
+        You picked <em>${picked}</em>. That doesn't match what the slide states for this concept.
+      </div>`;
+  }
+
+  els.explain.style.display = "block";
+  els.explain.innerHTML = title + whyPicked + `<div style="margin-top:12px; color: var(--muted2);">
+    Next: press <span class="kbd">N</span> or click here.
+  </div>`;
+
+  if (state.autoAdvance) {
+    els.explain.onclick = () => next();
+  }
+
+  // advance pointer (but keep question in order if wrong inserted later)
+  state.idx += 1;
+  save();
+}
+
+function next() {
+  if (state.finished) return;
+  els.explain.onclick = null;
+  render();
+}
+
+function skipQ() {
+  if (state.locked || state.finished) return;
+  const qid = state.order[state.idx];
+  // remove current and insert later
+  state.order.splice(state.idx, 1);
+  insertLater(qid);
+  save();
+  render();
+}
+
+function initDeckSel() {
+  els.deckSel.innerHTML = "";
+  DECKS.forEach(d => {
+    const o = document.createElement("option");
+    o.value = d.id;
+    o.textContent = d.name;
+    els.deckSel.appendChild(o);
+  });
+  els.deckSel.value = state.deckId;
+  els.deckSel.addEventListener("change", () => {
+    state.deckId = els.deckSel.value;
+    buildDeck(state.deckId);
+    render();
+  });
+}
+
+function bindControls() {
+  els.startBtn.addEventListener("click", () => {
+    buildDeck(state.deckId);
+    render();
+  });
+  els.resetBtn.addEventListener("click", () => {
+    localStorage.removeItem(STORAGE_KEY);
+    // hard reset
+    state = {
+      deckId: "ALL",
+      order: [],
+      idx: 0,
+      correct: 0,
+      wrong: 0,
+      seen: 0,
+      answeredIds: {},
+      lastAnsweredId: null,
+      lastWasCorrect: null,
+      locked: false,
+      finished: false,
+      hardMode: false,
+      showRefs: true,
+      autoAdvance: true,
+    };
+    els.showRefs.checked = true;
+    els.autoAdvance.checked = true;
+    els.hardMode.checked = false;
+    initDeckSel();
+    buildDeck("ALL");
+    render();
+  });
+
+  els.showRefs.addEventListener("change", () => {
+    state.showRefs = els.showRefs.checked;
+    save();
+    render();
+  });
+
+  els.autoAdvance.addEventListener("change", () => {
+    state.autoAdvance = els.autoAdvance.checked;
+    save();
+  });
+
+  els.hardMode.addEventListener("change", () => {
+    state.hardMode = els.hardMode.checked;
+    save();
+    render();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key >= "1" && e.key <= "4") {
+      const idx = Number(e.key) - 1;
+      const qid = state.order[state.idx];
+      const q = getQById(qid);
+      if (q && idx < q.choices.length) choose(idx);
+    }
+    if (e.key.toLowerCase() === "n") next();
+    if (e.key.toLowerCase() === "s") {
+      if (!state.hardMode) skipQ();
+    }
+    if (e.key.toLowerCase() === "r") {
+      buildDeck(state.deckId);
+      render();
+    }
+  });
+}
+
+(function boot() {
+  const had = load();
+  // set toggles from state
+  els.showRefs.checked = !!state.showRefs;
+  els.autoAdvance.checked = !!state.autoAdvance;
+  els.hardMode.checked = !!state.hardMode;
+
+  initDeckSel();
+  if (!had || !state.order.length) {
+    buildDeck(state.deckId || "ALL");
+  }
+  render();
+  bindControls();
+})();
+</script>
+</body>
+</html>
